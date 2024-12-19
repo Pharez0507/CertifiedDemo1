@@ -195,18 +195,19 @@ header .navbar ul li a:hover {
 
 /* Product Styles */
 .product-card {
-    background: #f9f9f9;
+    background: #fff;
     border-radius: 1rem;
     padding: 1.5rem;
     transition: all .3s ease;
     text-align: center;
     max-width: 250px;
     margin: 0 auto;
+    box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.1);
 }
 
 .product-card:hover {
     transform: translateY(-1rem);
-    box-shadow: 0 1rem 2rem rgba(0,0,0,0.1);
+    box-shadow: 0 1rem 2rem rgba(0,0,0,0.2);
 }
 
 .product-card img {
@@ -1022,4 +1023,23 @@ header.toggle {
 .menu-overlay.active {
     display: block;
     opacity: 1;
+}
+
+/* Add inquiry button specific styles */
+.inquiry-btn {
+    padding: .7rem 3rem;
+    background: #666;
+    color: #fff;
+    cursor: pointer;
+    margin-top: 1rem;
+    font-size: 2rem;
+    border-radius: 5rem;
+    transition: all .2s linear;
+    border: none;
+    width: 100%;
+}
+
+.inquiry-btn:hover {
+    background: #555;
+    transform: scale(1.05);
 }
