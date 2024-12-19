@@ -1,0 +1,32 @@
+.stat-box {
+    transition: transform 0.3s ease;
+}
+
+.stat-box:hover {
+    transform: scale(1.05);
+}
+
+.counter-number {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #ff00ff;
+}
+
+.inquiry-btn {
+    background: #ff00ff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.inquiry-btn:hover {
+    background: #cc00cc;
+}
+
+#message {
+    min-height: 150px;
+    resize: vertical;
+} 
