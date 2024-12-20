@@ -42,13 +42,75 @@ $(document).ready(function() {
     // Form submission handling
     $('.contact-form').on('submit', function(e) {
         e.preventDefault();
-        alert('Thank you for your message! We will get back to you soon.');
-        this.reset();
+        const modal = document.getElementById('platform-modal');
+        modal.style.display = 'flex';
+
+        // Get form data
+        const formData = {
+            name: $('#fullName').val(),
+            email: $('#email').val(),
+            phone: $('#phone').val(),
+            product: $('#product-select').val() === 'other' ? $('#other-product').val() : $('#product-select').val(),
+            message: $('#message').val()
+        };
+
+        // Handle platform selection
+        $('.platform-btn').off('click').on('click', function() {
+            const platform = $(this).data('platform');
+            const message = `Name: ${formData.name}
+Phone: ${formData.phone}
+Email: ${formData.email}
+Product: ${formData.product}
+Message: ${formData.message}`;
+
+            switch(platform) {
+                case 'whatsapp':
+                    const whatsappMessage = `Hi, my name is ${formData.name}.%0A%0AProduct Inquiry: ${formData.product}%0A%0A${formData.message}%0A%0AContact Details:%0APhone: ${formData.phone}%0AEmail: ${formData.email}`;
+                    window.open(`https://wa.me/27634298073?text=${whatsappMessage}`, '_blank');
+                    break;
+                case 'facebook':
+                    window.open('https://www.facebook.com/simphiwe.marwede.3?mibextid=ZbWKwL', '_blank');
+                    break;
+                case 'instagram':
+                    window.open('https://www.instagram.com/mr_junior.m/profilecard/?igsh=bDIxcnd2emNhaHls', '_blank');
+                    break;
+                case 'email':
+                    const emailBody = `Hi, my name is ${formData.name}.\n\nProduct Inquiry: ${formData.product}\n\n${formData.message}\n\nContact Details:\nPhone: ${formData.phone}\nEmail: ${formData.email}`;
+                    window.location.href = `mailto:thulaskoolt@gmail.com?subject=Inquiry about ${encodeURIComponent(formData.product)}&body=${encodeURIComponent(emailBody)}`;
+                    break;
+            }
+
+            modal.style.display = 'none';
+            e.target.reset();
+            if (window.typingInterval) {
+                clearInterval(window.typingInterval);
+                window.typingInterval = null;
+            }
+        });
+    });
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        const modal = document.getElementById('platform-modal');
+        if (event.target == modal) {
+            modal.style.display = 'none';
+        }
+    };
+
+    // Clear form button handling
+    $('.clear-btn').click(function() {
+        $('.contact-form')[0].reset();
     });
 
     // Inquiry button handling
-    $('.inquire-btn').click(function() {
-        alert('Thank you for your interest! Please use the contact form below to inquire about this product.');
+    $('.inquiry-btn').click(function() {
+        const productName = $(this).data('product');
+        const contactForm = $('.contact-form');
+        
+        // Set the selected product in the dropdown
+        $('#product-select').val(productName);
+        
+        // Scroll to contact section
         $('html, body').animate({
             scrollTop: $('#contact').offset().top
         }, 500, 'linear');
