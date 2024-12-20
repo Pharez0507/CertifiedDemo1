@@ -12,7 +12,7 @@
 
     <header>
         <div class="user">
-            <img src="images/logo.jpg" alt="">
+            <img src="images/logo.png" alt="">
             <h3 class="name">Bazzar Collection</h3>
             <p class="post">Step into Uniqueness</p>
         </div>
@@ -47,7 +47,7 @@
                 <div class="about-text">
                     <h3>Name: <span>Bazzar Collection</span></h3>
                     <h3>Established: <span>2024</span></h3>
-                    <h3>Location: <span>Vooslorus</span></h3>
+                    <h3>Location: <span>Vooslorus (Established)</span></h3>
                     <h3>Specialization: <span>Premium iPhones & Sneakers</span></h3>
                     <a href="#contact" class="btn">Contact Us <i class="fas fa-phone"></i></a>
                 </div>
@@ -302,8 +302,8 @@
                 <h3 class="title">Get In Touch</h3>
                 <div class="info-grid">
                     <div class="contact-numbers">
-                        <h3><i class="fas fa-phone"></i> +27 71 234 5678</h3>
-                        <h3><i class="fas fa-phone"></i> +27 82 345 6789</h3>
+                        <h3><i class="fas fa-phone"></i> +27 63 429 8073</h3>
+                        <h3><i class="fas fa-phone"></i> +27 65 939 2461</h3>
                     </div>
                     
                     <div class="contact-emails">
@@ -312,25 +312,25 @@
                     </div>
                     
                     <div class="contact-location">
-                        <h3><i class="fas fa-map-marker-alt"></i> Shop 15, The Zone @ Rosebank</h3>
+                        <h3><i class="fas fa-map-marker-alt"></i> Springs, Gauteng</h3>
                         <h3><i class="fas fa-map-marker-alt"></i> Johannesburg, South Africa</h3>
                     </div>
                     
                     <div class="operating-hours">
-                        <h3><i class="fas fa-clock"></i> Mon - Sat: 9:00 AM - 6:00 PM</h3>
-                        <h3><i class="fas fa-clock"></i> Sun: 10:00 AM - 3:00 PM</h3>
+                        <h3><i class="fas fa-clock"></i> Mon - Sat: 6:00 AM - 8:00 PM</h3>
+                        <h3><i class="fas fa-clock"></i> Sun: 8:00 AM - 5:00 PM</h3>
                     </div>
                 </div>
                 <div class="social-links">
-                    <a href="#" class="btn"><i class="fab fa-whatsapp"></i> WhatsApp</a>
-                    <a href="#" class="btn"><i class="fab fa-instagram"></i> Instagram</a>
-                    <a href="#" class="btn"><i class="fab fa-facebook"></i> Facebook</a>
+                    <a href="https://wa.me/27634298073" target="_blank" class="btn"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+                    <a href="https://www.instagram.com/mr_junior.m/profilecard/?igsh=bDIxcnd2emNhaHls" target="_blank" class="btn"><i class="fab fa-instagram"></i> Instagram</a>
+                    <a href="https://www.facebook.com/simphiwe.marwede.3?mibextid=ZbWKwL" target="_blank" class="btn"><i class="fab fa-facebook"></i> Facebook</a>
                 </div>
             </div>
             <form class="contact-form">
-                <input type="text" placeholder="Full Name" class="box" required>
-                <input type="email" placeholder="Email Address" class="box" required>
-                <input type="tel" placeholder="Phone Number" class="box" required>
+                <input type="text" placeholder="Full Name" class="box" id="fullName" required>
+                <input type="email" placeholder="Email Address" class="box" id="email" required>
+                <input type="tel" placeholder="Phone Number" class="box" id="phone" required>
                 <select class="box" id="product-select" required>
                     <option value="">Select Product Type</option>
                     <option value="iPhone 8">iPhone 8</option>
@@ -351,6 +351,27 @@
             </form>
         </div>
     </section>
+
+    <!-- Message Platform Modal -->
+    <div id="platform-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <h3>Choose Platform to Send Message</h3>
+            <div class="platform-buttons">
+                <button class="btn platform-btn" data-platform="whatsapp">
+                    <i class="fab fa-whatsapp"></i> WhatsApp
+                </button>
+                <button class="btn platform-btn" data-platform="facebook">
+                    <i class="fab fa-facebook"></i> Facebook
+                </button>
+                <button class="btn platform-btn" data-platform="instagram">
+                    <i class="fab fa-instagram"></i> Instagram
+                </button>
+                <button class="btn platform-btn" data-platform="email">
+                    <i class="fas fa-envelope"></i> Email
+                </button>
+            </div>
+        </div>
+    </div>
 
     <footer>
         <div class="footer-content">
