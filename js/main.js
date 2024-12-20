@@ -39,41 +39,83 @@ $(document).ready(function() {
         }, 500, 'linear');
     });
 
+    // Phone number input handling
+    $('#phone').on('input', function() {
+        const input = $(this);
+        let value = input.val().trim();
+
+        // Remove any existing tips
+        $('.phone-tip').remove();
+
+        // If user starts with 0, show tip
+        if (value.startsWith('0')) {
+            const tip = $('<div class="phone-tip">Tip: No need to add 0 at the start when using country code</div>');
+            input.parent().append(tip);
+            setTimeout(() => tip.fadeOut('slow', function() { $(this).remove(); }), 5000);
+        }
+    });
+
     // Form submission handling
     $('.contact-form').on('submit', function(e) {
         e.preventDefault();
-        const modal = document.getElementById('platform-modal');
-        modal.style.display = 'flex';
 
-        // Get form data
+        // Get form data and trim whitespace
         const formData = {
-            name: $('#fullName').val(),
-            email: $('#email').val(),
+            name: $('#fullName').val().trim(),
+            email: $('#email').val().trim(),
             countryCode: $('#country-code').val(),
-            phone: $('#phone').val(),
-            product: $('#product-select').val() === 'other' ? $('#other-product').val() : $('#product-select').val(),
-            message: $('#message').val()
+            phone: $('#phone').val().trim(),
+            product: $('#product-select').val() === 'other' ? $('#other-product').val().trim() : $('#product-select').val(),
+            message: $('#message').val().trim()
         };
 
-        // Format the full phone number
-        const fullPhone = `${formData.countryCode}${formData.phone.replace(/^0+/, '')}`;
+        // Basic validation
+        if (!formData.name || !formData.email || !formData.phone || !formData.product || !formData.message) {
+            alert('Please fill in all fields');
+            return;
+        }
+
+        if (!formData.countryCode) {
+            alert('Please select your country code');
+            return;
+        }
+
+        // Format phone number
+        let phoneNumber = formData.phone.replace(/[^\d]/g, ''); // Remove all non-digits
+        if (phoneNumber.startsWith('0')) {
+            phoneNumber = phoneNumber.substring(1);
+        }
+        const fullPhone = formData.countryCode + phoneNumber;
+
+        const modal = document.getElementById('platform-modal');
+        modal.style.display = 'flex';
 
         // Handle platform selection
         $('.platform-btn').off('click').on('click', function() {
             const platform = $(this).data('platform');
+            let messageTemplate = '';
+
+            // For WhatsApp, use %0A for line breaks
+            if (platform === 'whatsapp') {
+                messageTemplate = `Hi, I'm ${formData.name}!%0A%0A`;
+                messageTemplate += `I'm interested in: ${formData.product}%0A%0A`;
+                messageTemplate += `${formData.message}%0A%0A`;
+                messageTemplate += `My contact details:%0A`;
+                messageTemplate += `Phone: ${fullPhone}%0A`;
+                messageTemplate += `Email: ${formData.email}`;
+            } else {
+                // For other platforms, use regular line breaks
+                messageTemplate = `Hi, I'm ${formData.name}!\n\n`;
+                messageTemplate += `I'm interested in: ${formData.product}\n\n`;
+                messageTemplate += `${formData.message}\n\n`;
+                messageTemplate += `My contact details:\n`;
+                messageTemplate += `Phone: ${fullPhone}\n`;
+                messageTemplate += `Email: ${formData.email}`;
+            }
 
             switch(platform) {
                 case 'whatsapp':
-                    const whatsappMessage = encodeURIComponent(`Hi, I'm ${formData.name}!
-
-I'm interested in: ${formData.product}
-
-${formData.message}
-
-My contact details:
-Phone: ${fullPhone}
-Email: ${formData.email}`);
-                    window.open(`https://wa.me/27634298073?text=${whatsappMessage}`, '_blank');
+                    window.open(`https://wa.me/27634298073?text=${messageTemplate}`, '_blank');
                     break;
                 case 'facebook':
                     window.open('https://www.facebook.com/simphiwe.marwede.3?mibextid=ZbWKwL', '_blank');
@@ -82,25 +124,13 @@ Email: ${formData.email}`);
                     window.open('https://www.instagram.com/mr_junior.m/profilecard/?igsh=bDIxcnd2emNhaHls', '_blank');
                     break;
                 case 'email':
-                    const emailBody = `Hi, I'm ${formData.name}!
-
-I'm interested in: ${formData.product}
-
-${formData.message}
-
-My contact details:
-Phone: ${fullPhone}
-Email: ${formData.email}`;
-                    window.location.href = `mailto:thulaskoolt@gmail.com?subject=Inquiry about ${encodeURIComponent(formData.product)}&body=${encodeURIComponent(emailBody)}`;
+                    window.location.href = `mailto:thulaskoolt@gmail.com?subject=Inquiry about ${encodeURIComponent(formData.product)}&body=${encodeURIComponent(messageTemplate)}`;
                     break;
             }
 
             modal.style.display = 'none';
             e.target.reset();
-            if (window.typingInterval) {
-                clearInterval(window.typingInterval);
-                window.typingInterval = null;
-            }
+            $('#country-code').val('+27'); // Reset to South Africa
         });
     });
 
