@@ -62,7 +62,7 @@ $(document).ready(function() {
         // Get form data and trim whitespace
         const formData = {
             name: $('#fullName').val().trim(),
-            email: $('#email').val().trim(),
+            email: $('#email').val().toLowerCase(),
             phone: $('#phone').val().trim(),
             product: $('#product-select').val(),
             message: $('#message').val().trim()
@@ -71,12 +71,6 @@ $(document).ready(function() {
         // If "other" is selected, use the other-product value
         if (formData.product === 'other') {
             formData.product = $('#other-product').val().trim();
-        }
-
-        // Check if any field is empty
-        if (!formData.name || !formData.email || !formData.phone || !formData.product || !formData.message) {
-            alert('Please fill in all fields');
-            return;
         }
 
         // Format phone number (remove any non-digits)
@@ -126,7 +120,7 @@ Email: ${formData.email}`);
                     window.open('https://www.instagram.com/mr_junior.m/profilecard/?igsh=bDIxcnd2emNhaHls', '_blank');
                     break;
                 case 'email':
-                    window.location.href = `mailto:thulaskoolt@gmail.com?subject=Inquiry about ${encodeURIComponent(formData.product)}&body=${encodeURIComponent(messageTemplate)}`;
+                    window.location.href = `mailto:${formData.email}?subject=Inquiry about ${encodeURIComponent(formData.product)}&body=${encodeURIComponent(messageTemplate)}`;
                     break;
             }
 
