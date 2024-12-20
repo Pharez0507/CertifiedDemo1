@@ -73,6 +73,12 @@ $(document).ready(function() {
             formData.product = $('#other-product').val().trim();
         }
 
+        // Check if any field is empty
+        if (!formData.name || !formData.email || !formData.phone || !formData.product || !formData.message) {
+            alert('Please fill in all fields');
+            return;
+        }
+
         // Format phone number (remove any non-digits)
         let phoneNumber = formData.phone.replace(/[^\d]/g, '');
         if (phoneNumber.startsWith('0')) {
@@ -91,14 +97,16 @@ $(document).ready(function() {
 
             // For WhatsApp, use %0A for line breaks
             if (platform === 'whatsapp') {
-                messageTemplate = `Hi, I'm ${formData.name}!%0A%0A`;
-                messageTemplate += `I'm interested in: ${formData.product}%0A%0A`;
-                messageTemplate += `${formData.message}%0A%0A`;
-                messageTemplate += `My contact details:%0A`;
-                messageTemplate += `Phone: ${fullPhone}%0A`;
-                messageTemplate += `Email: ${formData.email}`;
+                messageTemplate = encodeURIComponent(`Hi, I'm ${formData.name}!
+
+I'm interested in: ${formData.product}
+
+${formData.message}
+
+My contact details:
+Phone: ${fullPhone}
+Email: ${formData.email}`);
             } else {
-                // For other platforms, use regular line breaks
                 messageTemplate = `Hi, I'm ${formData.name}!\n\n`;
                 messageTemplate += `I'm interested in: ${formData.product}\n\n`;
                 messageTemplate += `${formData.message}\n\n`;
