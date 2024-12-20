@@ -63,29 +63,23 @@ $(document).ready(function() {
         const formData = {
             name: $('#fullName').val().trim(),
             email: $('#email').val().trim(),
-            countryCode: $('#country-code').val(),
             phone: $('#phone').val().trim(),
-            product: $('#product-select').val() === 'other' ? $('#other-product').val().trim() : $('#product-select').val(),
+            product: $('#product-select').val(),
             message: $('#message').val().trim()
         };
 
-        // Basic validation
-        if (!formData.name || !formData.email || !formData.phone || !formData.product || !formData.message) {
-            alert('Please fill in all fields');
-            return;
+        // If "other" is selected, use the other-product value
+        if (formData.product === 'other') {
+            formData.product = $('#other-product').val().trim();
         }
 
-        if (!formData.countryCode) {
-            alert('Please select your country code');
-            return;
-        }
-
-        // Format phone number
-        let phoneNumber = formData.phone.replace(/[^\d]/g, ''); // Remove all non-digits
+        // Format phone number (remove any non-digits)
+        let phoneNumber = formData.phone.replace(/[^\d]/g, '');
         if (phoneNumber.startsWith('0')) {
             phoneNumber = phoneNumber.substring(1);
         }
-        const fullPhone = formData.countryCode + phoneNumber;
+        // Add South African code
+        const fullPhone = '+27' + phoneNumber;
 
         const modal = document.getElementById('platform-modal');
         modal.style.display = 'flex';
@@ -130,7 +124,6 @@ $(document).ready(function() {
 
             modal.style.display = 'none';
             e.target.reset();
-            $('#country-code').val('+27'); // Reset to South Africa
         });
     });
 
