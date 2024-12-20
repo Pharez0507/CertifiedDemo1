@@ -49,23 +49,30 @@ $(document).ready(function() {
         const formData = {
             name: $('#fullName').val(),
             email: $('#email').val(),
+            countryCode: $('#country-code').val(),
             phone: $('#phone').val(),
             product: $('#product-select').val() === 'other' ? $('#other-product').val() : $('#product-select').val(),
             message: $('#message').val()
         };
 
+        // Format the full phone number
+        const fullPhone = `${formData.countryCode}${formData.phone.replace(/^0+/, '')}`;
+
         // Handle platform selection
         $('.platform-btn').off('click').on('click', function() {
             const platform = $(this).data('platform');
-            const message = `Name: ${formData.name}
-Phone: ${formData.phone}
-Email: ${formData.email}
-Product: ${formData.product}
-Message: ${formData.message}`;
 
             switch(platform) {
                 case 'whatsapp':
-                    const whatsappMessage = `Hi, my name is ${formData.name}.%0A%0AProduct Inquiry: ${formData.product}%0A%0A${formData.message}%0A%0AContact Details:%0APhone: ${formData.phone}%0AEmail: ${formData.email}`;
+                    const whatsappMessage = encodeURIComponent(`Hi, I'm ${formData.name}!
+
+I'm interested in: ${formData.product}
+
+${formData.message}
+
+My contact details:
+Phone: ${fullPhone}
+Email: ${formData.email}`);
                     window.open(`https://wa.me/27634298073?text=${whatsappMessage}`, '_blank');
                     break;
                 case 'facebook':
@@ -75,7 +82,15 @@ Message: ${formData.message}`;
                     window.open('https://www.instagram.com/mr_junior.m/profilecard/?igsh=bDIxcnd2emNhaHls', '_blank');
                     break;
                 case 'email':
-                    const emailBody = `Hi, my name is ${formData.name}.\n\nProduct Inquiry: ${formData.product}\n\n${formData.message}\n\nContact Details:\nPhone: ${formData.phone}\nEmail: ${formData.email}`;
+                    const emailBody = `Hi, I'm ${formData.name}!
+
+I'm interested in: ${formData.product}
+
+${formData.message}
+
+My contact details:
+Phone: ${fullPhone}
+Email: ${formData.email}`;
                     window.location.href = `mailto:thulaskoolt@gmail.com?subject=Inquiry about ${encodeURIComponent(formData.product)}&body=${encodeURIComponent(emailBody)}`;
                     break;
             }
@@ -178,4 +193,23 @@ Message: ${formData.message}`;
             });
         });
     });
+
+    // Country code search functionality
+    $('#country-code').on('keydown', function(e) {
+        const select = this;
+        const searchText = e.key.toLowerCase();
+        
+        if (searchText.length === 1) { // Only handle single character keys
+            for (let i = 0; i < select.options.length; i++) {
+                const option = select.options[i];
+                if (option.text.toLowerCase().startsWith(searchText)) {
+                    select.selectedIndex = i;
+                    return;
+                }
+            }
+        }
+    });
+
+    // Set default country code to South Africa
+    $('#country-code').val('+27');
 });
