@@ -80,10 +80,10 @@ $(document).ready(function() {
 
         // Get form data and validate each field before using the default value
         const formData = {
-            name: $('#fullName').val() ? $('#fullName').val().trim() : 'Anonymous',
-            email: $('#email').val() ? $('#email').val().toLowerCase().trim() : 'No email provided',
-            phone: $('#phone').val() ? $('#phone').val().trim() : 'No phone number provided',
-            product: $('#product-select').val() ? $('#product-select').val().trim() : 'No product selected',
+            name: $('#fullName').val() ? $('#fullName').val().trim() : '(input your name)',
+            email: $('#email').val() ? $('#email').val().toLowerCase().trim() : '(provide your email)',
+            phone: $('#phone').val() ? $('#phone').val().trim() : '(enter phone number)',
+            product: $('#product-select').val() ? $('#product-select').val().trim() : '(Tell us of the product you are interested in)',
             message: $('#message').val() ? $('#message').val().trim() : 'No message provided'
         };
 
