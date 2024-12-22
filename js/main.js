@@ -70,8 +70,11 @@ $(document).ready(function() {
     $('.inquiry-btn').on('click', function() {
         const selectedProduct = $(this).data('product');
         
-        // Disable form fields
-        $('#fullName, #email, #phone').prop('disabled', true);
+        // Disable form fields and make them read-only
+        const fields = $('#fullName, #email, #phone');
+        fields.prop('disabled', true);
+        fields.prop('readonly', true);
+        fields.css('background-color', '#f0f0f0');
         
         // Set the product in the select
         $('#product-select').val(selectedProduct);
@@ -89,7 +92,7 @@ Looking forward to hearing from you!`);
         
         // Show custom notification
         swal({
-            title: "Bazzar_Collection",
+            title: "Bazzar_Collection says",
             text: "Please complete your message and choose how you would like to contact us.",
             icon: "info",
         });
@@ -100,8 +103,11 @@ Looking forward to hearing from you!`);
 
     // Handle "Make an Inquiry" button click
     $('a[href="#contact"].btn').on('click', function() {
-        // Disable form fields
-        $('#fullName, #email, #phone').prop('disabled', true);
+        // Disable form fields and make them read-only
+        const fields = $('#fullName, #email, #phone');
+        fields.prop('disabled', true);
+        fields.prop('readonly', true);
+        fields.css('background-color', '#f0f0f0');
         
         // Set template message
         $('#message').val(`Hi Bazzar Collection!
@@ -116,13 +122,49 @@ Thank you for your assistance!`);
         
         // Show custom notification
         swal({
-            title: "Bazzar_Collection",
+            title: "Bazzar_Collection says",
             text: "Please select a product and complete your message, then choose how you would like to contact us.",
             icon: "info",
         });
-    });case 'email':
-        window.location.href = `mailto:simphiwemarwede@gmail.com?subject=Inquiry about ${encodeURIComponent(formData.product)}&body=${encodedMessage}`;
-        break;
+    });
+
+    // Function to simulate typing effect
+    function typeMessage(message, element, speed = 50) {
+        let i = 0;
+        element.val(''); // Clear the textarea
+        const typeInterval = setInterval(() => {
+            if (i < message.length) {
+                element.val(element.val() + message.charAt(i));
+                element.scrollTop(element[0].scrollHeight); // Auto scroll to bottom
+                i++;
+            } else {
+                clearInterval(typeInterval);
+            }
+        }, speed);
+    }
+
+    // Make Inquiry button click handler
+    $('.make-inquiry-btn').click(function() {
+        const defaultMessage = `Hi Bazzar Collection!
+
+I would like to inquire about your products. Could you please provide information about:
+- Available products and models
+- Price ranges
+- Payment options
+- Delivery services
+
+Thank you for your assistance!`;
+
+        // Scroll to the contact form
+        $('html, body').animate({
+            scrollTop: $('.contact-form').offset().top - 100
+        }, 1000);
+
+        // Start typing effect after scrolling
+        setTimeout(() => {
+            typeMessage(defaultMessage, $('#message'));
+        }, 1000);
+    });
 
     // Form submission handling
     $('.contact-form').on('submit', function(e) {
@@ -179,7 +221,7 @@ Thank you!`;
         // Handle platform selection
         $('.platform-btn').off('click').on('click', function() {
             const platform = $(this).data('platform');
-            let encodedMessage = encodeURIComponent(messageTemplate);
+            let encodedMessage = encodeURIComponent(formData.message || '');
 
             switch (platform) {
                 case 'whatsapp':
@@ -192,7 +234,7 @@ Thank you!`;
                     window.open('https://www.instagram.com/mr_junior.m/profilecard/?igsh=bDIxcnd2emNhaHls', '_blank');
                     break;
                 case 'email':
-                    window.location.href = `mailto:${formData.email}?subject=Inquiry about ${encodeURIComponent(formData.product)}&body=${encodedMessage}`;
+                    window.location.href = `mailto:simphiwemarwede@gmail.com?subject=Inquiry about ${encodeURIComponent(formData.product)}&body=${encodedMessage}`;
                     break;
             }
 
@@ -200,7 +242,10 @@ Thank you!`;
             $('.contact-form')[0].reset(); // Clear form
             
             // Re-enable the fields for next use
-            $('#fullName, #email, #phone').prop('disabled', false);
+            const fields = $('#fullName, #email, #phone');
+            fields.prop('disabled', false);
+            fields.prop('readonly', false);
+            fields.css('background-color', '');
         });
     });
 
