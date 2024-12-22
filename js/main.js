@@ -70,18 +70,26 @@ $(document).ready(function() {
     $('.contact-form').on('submit', function(e) {
         e.preventDefault();
 
-        // Get form data and trim whitespace
+        // Add console.log statements to debug form values
+        console.log('Form submitted');
+        console.log('Name:', $('#fullName').val());
+        console.log('Email:', $('#email').val());
+        console.log('Phone:', $('#phone').val());
+        console.log('Product:', $('#product-select').val());
+        console.log('Message:', $('#message').val());
+
+        // Get form data and validate each field before using the default value
         const formData = {
-            name: $('#fullName').val().trim() || 'Anonymous',
-            email: $('#email').val().toLowerCase() || 'No email provided',
-            phone: $('#phone').val().trim() || 'No phone number provided',
-            product: $('#product-select').val() || 'No product selected',
-            message: $('#message').val().trim() || 'No message provided'
+            name: $('#fullName').val() ? $('#fullName').val().trim() : 'Anonymous',
+            email: $('#email').val() ? $('#email').val().toLowerCase().trim() : 'No email provided',
+            phone: $('#phone').val() ? $('#phone').val().trim() : 'No phone number provided',
+            product: $('#product-select').val() ? $('#product-select').val().trim() : 'No product selected',
+            message: $('#message').val() ? $('#message').val().trim() : 'No message provided'
         };
 
         // If "other" is selected, use the other-product value
-        if (formData.product === 'other') {
-            formData.product = $('#other-product').val().trim() || 'Other product not specified';
+        if (formData.product === 'other' && $('#other-product').val()) {
+            formData.product = $('#other-product').val().trim();
         }
 
         // Format phone number (remove any non-digits)
@@ -89,12 +97,11 @@ $(document).ready(function() {
         if (phoneNumber.startsWith('0')) {
             phoneNumber = phoneNumber.substring(1);
         }
-        // Add South African code
-        const fullPhone = '+27' + phoneNumber;
+        // Add South African code only if phone number is provided
+        const fullPhone = phoneNumber ? '+27' + phoneNumber : '';
 
-        // Construct the message
-        const messageTemplate = `
-Hi, I'm ${formData.name}!
+        // Construct the message with proper spacing
+        const messageTemplate = `Hi, I'm ${formData.name}!
 
 I'm interested in: ${formData.product}.
 Could you please provide more information about its availability and pricing? I would appreciate any additional details about this product.
@@ -103,12 +110,13 @@ My contact details:
 Phone: ${fullPhone}
 Email: ${formData.email}`;
 
-        console.log(messageTemplate); // Debugging: Log to ensure formatting is correct
+        console.log('Final message:', messageTemplate); // Debug log
 
-        // Proceed to handle platform-specific actions
+        // Show the platform modal
         const modal = document.getElementById('platform-modal');
         modal.style.display = 'flex';
 
+        // Handle platform selection
         $('.platform-btn').off('click').on('click', function() {
             const platform = $(this).data('platform');
             let encodedMessage = encodeURIComponent(messageTemplate);
@@ -126,7 +134,6 @@ Email: ${formData.email}`;
                 case 'email':
                     window.location.href = `mailto:${formData.email}?subject=Inquiry about ${encodeURIComponent(formData.product)}&body=${encodedMessage}`;
                     break;
-                // Add other platforms as needed
             }
 
             modal.style.display = 'none';
