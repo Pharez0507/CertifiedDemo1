@@ -1,4 +1,10 @@
 $(document).ready(function() {
+    // Disable form fields by default
+    const formFields = $('#fullName, #email, #phone, #message');
+    formFields.prop('disabled', true);
+    formFields.prop('readonly', true);
+    formFields.css('background-color', '#f0f0f0');
+
     // Create overlay element
     const overlay = $('<div class="menu-overlay"></div>');
     $('body').append(overlay);
