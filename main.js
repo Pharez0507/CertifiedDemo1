@@ -1,4 +1,10 @@
 $(document).ready(function() {
+    // Disable form fields by default
+    const formFields = $('#fullName, #email, #phone, #message');
+    formFields.prop('disabled', true);
+    formFields.prop('readonly', true);
+    formFields.css('background-color', '#f0f0f0');
+
     // Create overlay element
     const overlay = $('<div class="menu-overlay"></div>');
     $('body').append(overlay);
@@ -147,23 +153,44 @@ Thank you for your assistance!`);
     $('.make-inquiry-btn').click(function() {
         const defaultMessage = `Hi Bazzar Collection!
 
-I would like to inquire about your products. Could you please provide information about:
-- Available products and models
-- Price ranges
-- Payment options
-- Delivery services
+I'm interested in your products and would like to:
+- Learn more about your current collection
+- Get pricing information
+- Understand payment options
+- Know about delivery details
 
-Thank you for your assistance!`;
+Looking forward to hearing from you!`;
 
-        // Scroll to the contact form
-        $('html, body').animate({
-            scrollTop: $('.contact-form').offset().top - 100
-        }, 1000);
+        // Disable form fields and make them read-only
+        const fields = $('#fullName, #email, #phone');
+        fields.prop('disabled', true);
+        fields.prop('readonly', true);
+        fields.css('background-color', '#f0f0f0');
 
-        // Start typing effect after scrolling
-        setTimeout(() => {
-            typeMessage(defaultMessage, $('#message'));
-        }, 1000);
+        // Set the message and disable it
+        $('#message').val(defaultMessage);
+        $('#message').prop('disabled', true);
+        $('#message').prop('readonly', true);
+        $('#message').css('background-color', '#f0f0f0');
+
+        // Show notification
+        swal({
+            title: "Bazzar_Collection says",
+            text: "Please choose how you would like to contact us.",
+            icon: "info",
+        });
+
+        // Scroll to contact form
+        document.querySelector('#contact').scrollIntoView({ behavior: 'smooth' });
+    });
+
+    // Make form fields show tooltip on hover/focus
+    $('#fullName, #email, #phone, #message').on('mouseenter focus click', function(e) {
+        if ($(this).prop('disabled')) {
+            const tip = $('<div class="form-tip">Please use the "Make an Inquiry" button or "Inquire Now" on any product to send a message</div>');
+            $(this).parent().append(tip);
+            setTimeout(() => tip.fadeOut('slow', function() { $(this).remove(); }), 3000);
+        }
     });
 
     // Form submission handling
@@ -223,7 +250,7 @@ Thank you!`;
 
             switch (platform) {
                 case 'whatsapp':
-                    window.open(`https://wa.me/27662669329?text=${encodedMessage}`, '_blank');
+                    window.open(`https://wa.me/27634298073?text=${encodedMessage}`, '_blank');
                     break;
                 case 'facebook':
                     window.open('https://www.facebook.com/simphiwe.marwede.3?mibextid=ZbWKwL', '_blank');
@@ -232,7 +259,7 @@ Thank you!`;
                     window.open('https://www.instagram.com/mr_junior.m/profilecard/?igsh=bDIxcnd2emNhaHls', '_blank');
                     break;
                 case 'email':
-                    window.location.href = `mailto:bazzarcollection@gmail.com?subject=Product Inquiry: ${encodeURIComponent(formData.product)}&body=${encodedMessage}`;
+                    window.location.href = `mailto:simphiwemarwede@gmail.com?subject=Product Inquiry: ${encodeURIComponent(formData.product)}&body=${encodedMessage}`;
                     break;
             }
 
