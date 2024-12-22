@@ -200,44 +200,50 @@ Thank you for your assistance!`;
         // Add South African code only if phone number is provided
         const fullPhone = phoneNumber ? '+27' + phoneNumber : '(enter phone number)';
 
-        // Format the message for WhatsApp
-        const whatsappMessage = encodeURIComponent(`Hi! I'm interested in ${formData.product}.
+        // Format message with proper spacing and encoding
+        const messageTemplate = `Hi! I'm interested in ${formData.product}.
 Please provide details about pricing and availability.
-
-Contact me at:
-Phone: ${fullPhone}
-Email: ${formData.email}
-
-Thank you!`);
-
-        // WhatsApp link
-        const whatsappLink = `https://wa.me/27662669329?text=${whatsappMessage}`;
-        
-        // Email link
-        const emailSubject = encodeURIComponent(`Product Inquiry: ${formData.product}`);
-        const emailBody = encodeURIComponent(`Hi Bazzar Collection!
-
-I'm interested in: ${formData.product}
-Please provide information about pricing and availability.
 
 Contact Details:
 Phone: ${fullPhone}
 Email: ${formData.email}
 
-Thank you!`);
-        const emailLink = `mailto:bazzarcollection@gmail.com?subject=${emailSubject}&body=${emailBody}`;
+Thank you!`;
 
-        // Show contact options
-        swal({
-            title: "Choose Contact Method",
-            html: true,
-            text: `
-                <div class="contact-options">
-                    <a href="${whatsappLink}" class="btn whatsapp-btn" target="_blank">Send via WhatsApp</a>
-                    <a href="${emailLink}" class="btn email-btn">Send via Email</a>
-                </div>
-            `,
-            buttons: false
+        console.log('Final message:', messageTemplate); // Debug log
+
+        // Show the platform modal
+        const modal = document.getElementById('platform-modal');
+        modal.style.display = 'flex';
+
+        // Handle platform selection
+        $('.platform-btn').off('click').on('click', function() {
+            const platform = $(this).data('platform');
+            let encodedMessage = encodeURIComponent(messageTemplate);
+
+            switch (platform) {
+                case 'whatsapp':
+                    window.open(`https://wa.me/27662669329?text=${encodedMessage}`, '_blank');
+                    break;
+                case 'facebook':
+                    window.open('https://www.facebook.com/simphiwe.marwede.3?mibextid=ZbWKwL', '_blank');
+                    break;
+                case 'instagram':
+                    window.open('https://www.instagram.com/mr_junior.m/profilecard/?igsh=bDIxcnd2emNhaHls', '_blank');
+                    break;
+                case 'email':
+                    window.location.href = `mailto:bazzarcollection@gmail.com?subject=Product Inquiry: ${encodeURIComponent(formData.product)}&body=${encodedMessage}`;
+                    break;
+            }
+
+            modal.style.display = 'none';
+            $('.contact-form')[0].reset(); // Clear form
+            
+            // Re-enable the fields for next use
+            const fields = $('#fullName, #email, #phone');
+            fields.prop('disabled', false);
+            fields.prop('readonly', false);
+            fields.css('background-color', '');
         });
     });
 
