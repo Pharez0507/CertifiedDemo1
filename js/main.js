@@ -66,6 +66,64 @@ $(document).ready(function() {
         }
     });
 
+    // Handle "Inquire Now" button clicks
+    $('.inquiry-btn').on('click', function() {
+        const selectedProduct = $(this).data('product');
+        
+        // Disable form fields
+        $('#fullName, #email, #phone').prop('disabled', true);
+        
+        // Set the product in the select
+        $('#product-select').val(selectedProduct);
+        
+        // Set template message
+        $('#message').val(`Hi Bazzar Collection!
+
+I'm interested in the ${selectedProduct} and would like to know more about its:
+- Current availability
+- Pricing details
+- Payment options
+- Delivery information
+
+Looking forward to hearing from you!`);
+        
+        // Show custom notification
+        swal({
+            title: "Bazzar_Collection",
+            text: "Please complete your message and choose how you would like to contact us.",
+            icon: "info",
+        });
+        
+        // Scroll to contact form
+        document.querySelector('#contact').scrollIntoView({ behavior: 'smooth' });
+    });
+
+    // Handle "Make an Inquiry" button click
+    $('a[href="#contact"].btn').on('click', function() {
+        // Disable form fields
+        $('#fullName, #email, #phone').prop('disabled', true);
+        
+        // Set template message
+        $('#message').val(`Hi Bazzar Collection!
+
+I would like to inquire about your products. Could you please provide information about:
+- Available products and models
+- Price ranges
+- Payment options
+- Delivery services
+
+Thank you for your assistance!`);
+        
+        // Show custom notification
+        swal({
+            title: "Bazzar_Collection",
+            text: "Please select a product and complete your message, then choose how you would like to contact us.",
+            icon: "info",
+        });
+    });case 'email':
+        window.location.href = `mailto:simphiwemarwede@gmail.com?subject=Inquiry about ${encodeURIComponent(formData.product)}&body=${encodedMessage}`;
+        break;
+
     // Form submission handling
     $('.contact-form').on('submit', function(e) {
         e.preventDefault();
@@ -98,17 +156,19 @@ $(document).ready(function() {
             phoneNumber = phoneNumber.substring(1);
         }
         // Add South African code only if phone number is provided
-        const fullPhone = phoneNumber ? '+27' + phoneNumber : '';
+        const fullPhone = phoneNumber ? '+27' + phoneNumber : '(enter phone number)';
 
         // Construct the message with proper spacing
-        const messageTemplate = `Hi, I'm ${formData.name}!
+        const messageTemplate = `Hi, I'm interested in getting more information!
 
-I'm interested in: ${formData.product}.
+Product of Interest: ${formData.product}
 Could you please provide more information about its availability and pricing? I would appreciate any additional details about this product.
 
-My contact details:
+When you respond, I will provide my contact details:
 Phone: ${fullPhone}
-Email: ${formData.email}`;
+Email: ${formData.email}
+
+Thank you!`;
 
         console.log('Final message:', messageTemplate); // Debug log
 
@@ -138,6 +198,9 @@ Email: ${formData.email}`;
 
             modal.style.display = 'none';
             $('.contact-form')[0].reset(); // Clear form
+            
+            // Re-enable the fields for next use
+            $('#fullName, #email, #phone').prop('disabled', false);
         });
     });
 
