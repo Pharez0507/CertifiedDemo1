@@ -55,22 +55,33 @@ $(document).ready(function() {
         }
     });
 
+    // Message input handling
+    $('#message').on('input', function() {
+        // Remove any existing copy tips
+        $('.copy-tip').remove();
+        
+        if ($(this).val().trim().length > 0) {
+            const tip = $('<div class="copy-tip">Tip: Copy your message before sending</div>');
+            $(this).after(tip);
+        }
+    });
+
     // Form submission handling
     $('.contact-form').on('submit', function(e) {
         e.preventDefault();
 
         // Get form data and trim whitespace
         const formData = {
-            name: $('#fullName').val().trim(),
-            email: $('#email').val().toLowerCase(),
-            phone: $('#phone').val().trim(),
-            product: $('#product-select').val(),
-            message: $('#message').val().trim()
+            name: $('#fullName').val().trim() || 'Anonymous',
+            email: $('#email').val().toLowerCase() || 'No email provided',
+            phone: $('#phone').val().trim() || 'No phone number provided',
+            product: $('#product-select').val() || 'No product selected',
+            message: $('#message').val().trim() || 'No message provided'
         };
 
         // If "other" is selected, use the other-product value
         if (formData.product === 'other') {
-            formData.product = $('#other-product').val().trim();
+            formData.product = $('#other-product').val().trim() || 'Other product not specified';
         }
 
         // Format phone number (remove any non-digits)
@@ -81,37 +92,30 @@ $(document).ready(function() {
         // Add South African code
         const fullPhone = '+27' + phoneNumber;
 
-        const modal = document.getElementById('platform-modal');
-        modal.style.display = 'flex';
+        // Construct the message
+        const messageTemplate = `
+Hi, I'm ${formData.name}!
 
-        // Handle platform selection
-        $('.platform-btn').off('click').on('click', function() {
-            const platform = $(this).data('platform');
-            let messageTemplate = '';
-
-            // For WhatsApp, use %0A for line breaks
-            if (platform === 'whatsapp') {
-                messageTemplate = encodeURIComponent(`Hi, I'm ${formData.name}!
-
-I'm interested in: ${formData.product}
-
-${formData.message}
+I'm interested in: ${formData.product}.
+Could you please provide more information about its availability and pricing? I would appreciate any additional details about this product.
 
 My contact details:
 Phone: ${fullPhone}
-Email: ${formData.email}`);
-            } else {
-                messageTemplate = `Hi, I'm ${formData.name}!\n\n`;
-                messageTemplate += `I'm interested in: ${formData.product}\n\n`;
-                messageTemplate += `${formData.message}\n\n`;
-                messageTemplate += `My contact details:\n`;
-                messageTemplate += `Phone: ${fullPhone}\n`;
-                messageTemplate += `Email: ${formData.email}`;
-            }
+Email: ${formData.email}`;
 
-            switch(platform) {
+        console.log(messageTemplate); // Debugging: Log to ensure formatting is correct
+
+        // Proceed to handle platform-specific actions
+        const modal = document.getElementById('platform-modal');
+        modal.style.display = 'flex';
+
+        $('.platform-btn').off('click').on('click', function() {
+            const platform = $(this).data('platform');
+            let encodedMessage = encodeURIComponent(messageTemplate);
+
+            switch (platform) {
                 case 'whatsapp':
-                    window.open(`https://wa.me/27634298073?text=${messageTemplate}`, '_blank');
+                    window.open(`https://wa.me/27634298073?text=${encodedMessage}`, '_blank');
                     break;
                 case 'facebook':
                     window.open('https://www.facebook.com/simphiwe.marwede.3?mibextid=ZbWKwL', '_blank');
@@ -120,12 +124,13 @@ Email: ${formData.email}`);
                     window.open('https://www.instagram.com/mr_junior.m/profilecard/?igsh=bDIxcnd2emNhaHls', '_blank');
                     break;
                 case 'email':
-                    window.location.href = `mailto:${formData.email}?subject=Inquiry about ${encodeURIComponent(formData.product)}&body=${encodeURIComponent(messageTemplate)}`;
+                    window.location.href = `mailto:${formData.email}?subject=Inquiry about ${encodeURIComponent(formData.product)}&body=${encodedMessage}`;
                     break;
+                // Add other platforms as needed
             }
 
             modal.style.display = 'none';
-            e.target.reset();
+            $('.contact-form')[0].reset(); // Clear form
         });
     });
 
@@ -145,15 +150,22 @@ Email: ${formData.email}`);
     // Inquiry button handling
     $('.inquiry-btn').click(function() {
         const productName = $(this).data('product');
-        const contactForm = $('.contact-form');
         
         // Set the selected product in the dropdown
         $('#product-select').val(productName);
         
+        // Show the copy tip immediately
+        $('.copy-tip').remove(); // Remove any existing tips
+        const tip = $('<div class="copy-tip">Tip: Copy your message before sending</div>');
+        $('#message').parent().append(tip);
+
         // Scroll to contact section
         $('html, body').animate({
             scrollTop: $('#contact').offset().top
-        }, 500, 'linear');
+        }, 500, 'linear', function() {
+            // Focus on the message textarea
+            $('#message').focus();
+        });
     });
 
     // Scroll buttons functionality
@@ -237,4 +249,16 @@ Email: ${formData.email}`);
 
     // Set default country code to South Africa
     $('#country-code').val('+27');
+
+    // Show the copy tip by default when the page loads
+    const tip = $('<div class="copy-tip">Tip: Copy your message before sending</div>');
+    $('.message').after(tip);
+
+    // Keep the tip visible when the message field is focused
+    $('#message').on('focus', function() {
+        if ($('.copy-tip').length === 0) {
+            const tip = $('<div class="copy-tip">Tip: Copy your message before sending</div>');
+            $('.message').after(tip);
+        }
+    });
 });
